@@ -14,6 +14,10 @@ Button::Button()
 	m_second_OutlineColor = sf::Color::White;
 }
 
+Button::~Button()
+{
+}
+
 void Button::setPointCount(std::size_t count)
 {
 	m_shape.setPointCount(count);

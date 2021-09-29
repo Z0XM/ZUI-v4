@@ -12,6 +12,11 @@ Slider::Slider(const sf::Vector2f& size)
 
 	actionEvent = ActionEvent::MOUSEHELD;
 }
+
+Slider::~Slider()
+{
+}
+
 void Slider::setVariable(float& var, float lower_limit, float upper_limit)
 {
 	m_variable = &var;

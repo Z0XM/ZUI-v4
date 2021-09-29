@@ -20,6 +20,12 @@ Page::Page(const sf::Vector2f& size)
 	m_functional_object = FunctionalObject::PAGE;
 	
 }
+
+Page::~Page()
+{
+
+}
+
 void Page::addEntity(Entity& entity)
 {
 	m_entities.push_back(&entity);

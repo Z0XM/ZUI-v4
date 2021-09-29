@@ -29,6 +29,11 @@ Dropdown::Dropdown(const sf::Vector2f& headerSize, float itemHeight, int itemLim
 
 	m_page.setFillColor(sf::Color::Transparent);
 }
+
+Dropdown::~Dropdown()
+{
+}
+
 void Dropdown::setHeader()
 {
 	m_header.actionEvent = ActionEvent::MOUSEHELD;

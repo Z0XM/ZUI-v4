@@ -29,6 +29,11 @@ Inputbox::Inputbox(const sf::Vector2f& size)
 	m_blink_limit = 40;
 }
 
+Inputbox::~Inputbox()
+{
+
+}
+
 bool Inputbox::isInInputMode() const
 {
 	return m_input_mode;
