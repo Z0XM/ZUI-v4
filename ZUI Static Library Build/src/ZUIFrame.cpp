@@ -34,8 +34,10 @@ Entity::Entity(const Entity& entity)
 {
 	m_id = (getClassID(entity) << 24) + ++item_count;
 
+	if(getClassID(entity) != ZUI_ID_INPUTBOX)
+		action = entity.action;
+
 	m_selected = entity.m_selected;
-	action = entity.action;
 	actionEvent = entity.actionEvent;
 	m_active = entity.m_active;
 	m_functionalParent = entity.m_functionalParent;
@@ -48,8 +50,10 @@ Entity::Entity(const Entity& entity)
 
 Entity& Entity::operator=(const Entity& entity)
 {
+	if (getClassID(entity) != ZUI_ID_INPUTBOX)
+		action = entity.action;
+
 	m_selected = entity.m_selected;
-	action = entity.action;
 	actionEvent = entity.actionEvent;
 	m_active = entity.m_active;
 	m_functionalParent = entity.m_functionalParent;
