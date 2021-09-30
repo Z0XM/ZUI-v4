@@ -207,19 +207,16 @@ void Frame::addEntity(Entity& entity)
 
 void Frame::removeEntity(Entity& entity)
 {
-	// set entity's frame to null
-	//setEntityFrame(entity, nullptr);
-
-	// if entity's name exists remove it
-	std::string name = getName(entity.getID());
-	if (name != "")removeName(name);
-
-	// erase entity from map
-	m_entityMap.erase(entity.getID());
+	removeEntity(entity.getID());
 }
 
 void Frame::removeEntity(unsigned int id)
 {
+	// if entity's name exists remove it
+	std::string name = getName(id);
+	if (name != "")removeName(name);
+
+	// erase entity from map
 	m_entityMap.erase(id);
 }
 

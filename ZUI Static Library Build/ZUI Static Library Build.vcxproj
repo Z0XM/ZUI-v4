@@ -95,6 +95,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)ZUI-v4/include;$(SolutionDir)SFML/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <ProgramDataBaseFileName>$(OutDir)ZUI-d.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -116,6 +117,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)ZUI-v4/include;$(SolutionDir)SFML/include</AdditionalIncludeDirectories>
+      <ProgramDataBaseFileName>$(OutDir)ZUI.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <SubSystem>
