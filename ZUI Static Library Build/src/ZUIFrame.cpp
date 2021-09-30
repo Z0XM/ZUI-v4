@@ -8,8 +8,6 @@
 #include <ZUI/Dropdown.hpp>
 #include <ZUI/Inputbox.hpp>
 
-#include <iostream>
-
 using namespace zui;
 
 // set the initial count to 0
@@ -347,8 +345,6 @@ void Frame::update()
 				}
 			}
 		}
-
-		std::cout << wasSomethingClicked() << "\n";
 
 		//update last mouse pos
 		m_lastMousePos = getMousePosition();
