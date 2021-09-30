@@ -8,6 +8,8 @@
 #include <ZUI/Dropdown.hpp>
 #include <ZUI/Inputbox.hpp>
 
+#include <iostream>
+
 using namespace zui;
 
 // set the initial count to 0
@@ -346,6 +348,8 @@ void Frame::update()
 			}
 		}
 
+		std::cout << wasSomethingClicked() << "\n";
+
 		//update last mouse pos
 		m_lastMousePos = getMousePosition();
 	}
@@ -377,19 +381,17 @@ bool Frame::pollEvents(sf::Event e)
 	// if an entity is released
 	else if (e.type == sf::Event::MouseButtonReleased) {
 
-			if (m_navigator != -1) {
-				if (!isMouseOverSomething() || *getNavigatedEntity() != *m_mouseHoveringOn) { 
-					getNavigatedEntity()->deactivateSelection(); // deactivate navigated entity
-				}
-				m_navigator = -1; // necessary
+		if (m_navigator != -1) {
+			if (!isMouseOverSomething() || *getNavigatedEntity() != *m_mouseHoveringOn) { 
+				getNavigatedEntity()->deactivateSelection(); // deactivate navigated entity
 			}
+			m_navigator = -1; // necessary
+		}
 
 		// trigger action
 		if (wasSomethingClicked() && m_clicked == m_mouseHoveringOn && e.mouseButton.button == sf::Mouse::Left){
 			if (m_clicked->actionEvent == Entity::ActionEvent::RELEASE && m_clicked->hasAction()) {
 				m_clicked->callAction();
-			
-				return true; // event occurred
 			}
 		}
 

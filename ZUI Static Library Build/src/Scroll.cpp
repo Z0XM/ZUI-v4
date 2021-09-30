@@ -24,11 +24,6 @@ Page::Scroll::Scroll()
 	m_bar.actionEvent = ActionEvent::MOUSEHELD;
 }
 
-Page::Scroll::~Scroll()
-{
-
-}
-
 void Page::Scroll::createScroll(sf::Vector2f region_size, sf::Vector2f max_size, ScrollPlacement place)
 {
 	sf::Vector2f barSize;
