@@ -333,4 +333,6 @@ private:
 	sf::ConvexShape m_shape;							/// < shape of the button
 };
 
+typedef std::unique_ptr<zui::Button> Button_ptr;
+
 } // namespace zui

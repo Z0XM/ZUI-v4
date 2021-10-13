@@ -12,14 +12,14 @@ private:
 	sf::Font font;
 	zui::Frame frame;
 	float val;
-	zui::Button rectB;
-	zui::TextButton button, button2, button3, dbutton1, dbutton2, dbutton3, dbutton4, dbutton5, dbutton6;
-	zui::Page page, page2, page3;
-	zui::Slider slider;
-	zui::Textbox text;
-	zui::Dropdown drop;
+	zui::Button_ptr rectB;
+	zui::TextButton_ptr button, button2, button3, dbutton1, dbutton2, dbutton3, dbutton4, dbutton5, dbutton6;
+	zui::Page_ptr page, page2, page3;
+	zui::Slider_ptr slider;
+	zui::Textbox_ptr text;
+	zui::Dropdown_ptr drop;
 
-	zui::Inputbox ibox, ibox2;
+	zui::Inputbox_ptr ibox, ibox2;
 
 	void initWindow();
 public:

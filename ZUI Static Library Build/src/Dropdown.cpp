@@ -183,6 +183,10 @@ void Dropdown::addItem(Textbox& textbox)
 
 	m_itemIDs.push_back(textbox.getID());
 }
+void Dropdown::addItem(Textbox* textbox)
+{
+	addItem(*textbox);
+}
 void zui::Dropdown::addItem(Button& button)
 {
 	button.setPointCount(4);
@@ -199,6 +203,10 @@ void zui::Dropdown::addItem(Button& button)
 	m_page.setScroll(Page::ScrollPlacement::RIGHT);
 
 	m_itemIDs.push_back(button.getID());
+}
+void zui::Dropdown::addItem(Button* button)
+{
+	addItem(*button);
 }
 void Dropdown::insertItem(int where, Textbox& textbox)
 {
@@ -218,6 +226,10 @@ void Dropdown::insertItem(int where, Textbox& textbox)
 	m_page.setScroll(Page::ScrollPlacement::RIGHT);
 
 	m_itemIDs.insert(m_itemIDs.begin() + where, textbox.getID());
+}
+void Dropdown::insertItem(int where, Textbox* textbox)
+{
+	insertItem(where, *textbox);
 }
 void zui::Dropdown::insertItem(int where, Button& button)
 {
@@ -241,6 +253,10 @@ void zui::Dropdown::insertItem(int where, Button& button)
 	m_page.setScroll(Page::ScrollPlacement::RIGHT);
 
 	m_itemIDs.insert(m_itemIDs.begin() + where, button.getID());
+}
+void zui::Dropdown::insertItem(int where, Button* button)
+{
+	insertItem(where, *button);
 }
 void Dropdown::eraseItem(int where)
 {

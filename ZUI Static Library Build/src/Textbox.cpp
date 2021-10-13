@@ -40,7 +40,7 @@ void Textbox::setFont(const sf::Font& font)
 {
 	m_text.setFont(font);
 }
-void Textbox::setCharacterSize(unsigned int size)
+void Textbox::setCharacterSize(uint64_t size)
 {
 	m_text.setCharacterSize(size);
 }
@@ -100,7 +100,7 @@ const sf::Font* Textbox::getFont() const
 {
 	return m_text.getFont();
 }
-unsigned int Textbox::getCharacterSize() const
+uint64_t Textbox::getCharacterSize() const
 {
 	return m_text.getCharacterSize();
 }

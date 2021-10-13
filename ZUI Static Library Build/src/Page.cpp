@@ -32,10 +32,12 @@ void Page::addEntity(Entity& entity)
 
 	setFunctionalParent(entity, this);
 }
-void Page::removeEntity(const Entity& entity)
+void Page::addEntity(Entity* entity)
 {
-	std::string name = getName(entity.getID());
-	if (name != "")Frame::removeName(name);
+	addEntity(*entity);
+}
+void Page::removeEntity(Entity& entity)
+{
 	for (int i = 0; i < m_entities.size(); i++) {
 		if (m_entities[i]->getID() == entity.getID()) {
 			m_entities.erase(m_entities.begin() + i);
@@ -43,7 +45,11 @@ void Page::removeEntity(const Entity& entity)
 		}
 	}
 }
-void Page::removeEntity(unsigned int id)
+void Page::removeEntity(Entity* entity)
+{
+	removeEntity(*entity);
+}
+void Page::removeEntity(uint64_t id)
 {
 	for (int i = 0; i < m_entities.size(); i++) {
 		if (m_entities[i]->getID() == id) {
@@ -52,11 +58,7 @@ void Page::removeEntity(unsigned int id)
 		}
 	}
 }
-void Page::setName(const Entity& entity, const std::string& name)
-{
-	Frame::setName(entity, name);
-}
-Entity* Page::getByID(unsigned int id) const
+Entity* Page::getByID(uint64_t id) const
 {
 	for (int i = 0; i < m_entities.size(); i++) {
 		if (m_entities[i]->getID() == id) {
@@ -64,14 +66,6 @@ Entity* Page::getByID(unsigned int id) const
 		}
 	}
 	return nullptr;
-}
-Entity* Page::getByName(const std::string& name) const
-{
-	return getByID(Frame::getIDByName(name));
-}
-std::string Page::getName(unsigned int id)
-{
-	return Frame::getName(id);
 }
 void Page::setFillColor(sf::Color color)
 {

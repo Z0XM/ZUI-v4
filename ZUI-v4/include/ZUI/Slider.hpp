@@ -120,4 +120,8 @@ private:
 	float m_limits[2];						/// < lower and upper limit of the variable
 };
 
+
+typedef std::unique_ptr<zui::Slider> Slider_ptr;
+
+
 } // namespace zui

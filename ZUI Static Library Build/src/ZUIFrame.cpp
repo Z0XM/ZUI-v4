@@ -11,9 +11,9 @@
 using namespace zui;
 
 // set the initial count to 0
-unsigned int Entity::item_count = 0;
+uint64_t Entity::item_count = 0;
 
-Entity::Entity(unsigned int class_id)
+Entity::Entity(uint64_t class_id)
 {
 	/*
 	* generate unique id
@@ -71,11 +71,11 @@ Entity::~Entity()
 {
 
 }
-unsigned int Entity::getID() const
+uint64_t Entity::getID() const
 {
 	return m_id;
 }
-unsigned int Entity::getClassID(const Entity& entity)
+uint64_t Entity::getClassID(const Entity& entity)
 {
 	// get the 8 most significan bits
 	return entity.getID() >> 24;
@@ -172,8 +172,6 @@ template<> bool isEntityOfType<Scroll>(Entity* entity) {
 }
 
 
-std::unordered_map<std::string, unsigned int> Frame::m_nameMap;
-
 Frame::Frame()
 {
 	// set defaults
@@ -209,29 +207,25 @@ void Frame::addEntity(Entity& entity)
 	setFunctionalParent(entity, this);
 }
 
+void Frame::addEntity(Entity* entity)
+{
+	addEntity(*entity);
+}
+
 void Frame::removeEntity(Entity& entity)
 {
 	removeEntity(entity.getID());
 }
 
-void Frame::removeEntity(unsigned int id)
+void Frame::removeEntity(Entity* entity)
 {
-	// if entity's name exists remove it
-	std::string name = getName(id);
-	if (name != "")removeName(name);
+	removeEntity(entity->getID());
+}
 
+void Frame::removeEntity(uint64_t id)
+{
 	// erase entity from map
 	m_entityMap.erase(id);
-}
-
-void Frame::setName(const Entity& entity, const std::string& name)
-{
-	m_nameMap[name] = entity.getID();
-}
-
-void Frame::removeName(const std::string& name)
-{
-	m_nameMap.erase(name);
 }
 
 void Frame::push_in_navigationOrder(Entity& entity) 
@@ -239,25 +233,9 @@ void Frame::push_in_navigationOrder(Entity& entity)
 	m_navigationOrder.push_back(&entity);
 }
 
-Entity* Frame::getByID(unsigned int id) const
+Entity* Frame::getByID(uint64_t id) const
 {
 	return m_entityMap.at(id);
-}
-
-Entity* Frame::getByName(const std::string& name) const
-{
-	return m_entityMap.at(m_nameMap.at(name));
-}
-unsigned int Frame::getIDByName(const std::string& name)
-{
-	return m_nameMap.at(name);
-}
-std::string Frame::getName(unsigned int id)
-{
-	for (auto it = m_nameMap.begin(); it != m_nameMap.end(); it++) {
-		if (it->second == id)return it->first;
-	}
-	return "";
 }
 sf::Vector2f Frame::getMousePosition() const
 {

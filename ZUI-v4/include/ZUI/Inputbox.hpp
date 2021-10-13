@@ -66,4 +66,7 @@ private:
 	int m_blink_limit = 40;				/// < blink time limit, total time taken by blink is 2*blink limit
 };
 
+
+typedef std::unique_ptr<zui::Inputbox> Inputbox_ptr;
+
 } // namespace zui
