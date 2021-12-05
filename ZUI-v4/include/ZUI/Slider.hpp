@@ -31,6 +31,14 @@ public:
 	void setVariable(float& var, float lower_limit, float upper_limit);
 
 	////////////////////////////////////////////////////////////
+	/// \brief Get the value of pointed variable
+	/// 
+	/// \return value of pointed float variable
+	///
+	////////////////////////////////////////////////////////////
+	float getVariableValue();
+
+	////////////////////////////////////////////////////////////
 	/// \brief Increase object's offset by shift
 	/// 
 	/// \param shift Value to shift offset by
@@ -109,15 +117,23 @@ public:
 	///////////////////////////////////////////////////////////
 	void setAction(std::function<void()> func) = delete;
 
+	///////////////////////////////////////////////////////////
+	/// /brief Add an function which gets called whenever slider is moved
+	/// 
+	///////////////////////////////////////////////////////////
+	void attachAction(std::function<void()> func);
+
 	////////////////////////////////////////////////////////////
 	// Member data
 	////////////////////////////////////////////////////////////
 private:
 
-	Button m_bar;							/// < Sider rectangle
-	float m_offset;							/// < distance of slider bar from left position
-	float* m_variable;                      /// < pointer to variable whose value needs to be altered
-	float m_limits[2];						/// < lower and upper limit of the variable
+	Button m_bar;								/// < Sider rectangle
+	float m_offset;								/// < distance of slider bar from left position
+	float* m_variable;							/// < pointer to variable whose value needs to be altered
+	float m_limits[2];							/// < lower and upper limit of the variable
+
+	std::function<void()> m_attached_action;	/// < Function Attached to Slider Movement
 };
 
 

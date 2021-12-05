@@ -11,6 +11,8 @@ Slider::Slider(const sf::Vector2f& size)
 	m_limits[0] = m_limits[1] = 0;
 
 	actionEvent = ActionEvent::MOUSEHELD;
+
+	m_attached_action = nullptr;
 }
 
 Slider::~Slider()
@@ -33,7 +35,14 @@ void Slider::setVariable(float& var, float lower_limit, float upper_limit)
 		m_offset = getInverseTransform().transformPoint(getFunctionalParent()->getMousePosition()).x;
 
 		shiftOffset(0);
+
+		if(m_attached_action != nullptr) m_attached_action();
 	};
+}
+
+float Slider::getVariableValue()
+{
+	return m_variable == nullptr ? 0 : *m_variable;
 }
 
 void Slider::shiftOffset(float shift)
@@ -137,4 +146,9 @@ void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		//draw bar
 		m_bar.draw(target, states);
 	}
+}
+
+void Slider::attachAction(std::function<void()> func)
+{
+	m_attached_action = func;
 }
