@@ -81,9 +81,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)ZUI-v4\lib</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)ZUI-v4\lib</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -96,6 +100,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)ZUI-v4/include;$(SolutionDir)SFML/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ProgramDataBaseFileName>$(OutDir)ZUI-d.pdb</ProgramDataBaseFileName>
+      <DisableSpecificWarnings>4244;4010</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -118,6 +123,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)ZUI-v4/include;$(SolutionDir)SFML/include</AdditionalIncludeDirectories>
       <ProgramDataBaseFileName>$(OutDir)ZUI.pdb</ProgramDataBaseFileName>
+      <DisableSpecificWarnings>4244;4010</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -140,12 +146,16 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)ZUI-v4/include;$(SolutionDir)SFML/include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <DisableSpecificWarnings>4244;4010</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <OutputFile>$(OutDir)ZUI-d$(TargetExt)</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -158,6 +168,9 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)ZUI-v4/include;$(SolutionDir)SFML/include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4244;4010</DisableSpecificWarnings>
+      <ProgramDataBaseFileName>$(OutDir)ZUI.pdb</ProgramDataBaseFileName>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -166,6 +179,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <OutputFile>$(OutDir)ZUI$(TargetExt)</OutputFile>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -183,8 +199,10 @@
     <ClCompile Include="src\Page.cpp" />
     <ClCompile Include="src\Scroll.cpp" />
     <ClCompile Include="src\Slider.cpp" />
+    <ClCompile Include="src\StyleSheet.cpp" />
     <ClCompile Include="src\Textbox.cpp" />
     <ClCompile Include="src\TextButton.cpp" />
+    <ClCompile Include="src\ToggleButton.cpp" />
     <ClCompile Include="src\ZUIFrame.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

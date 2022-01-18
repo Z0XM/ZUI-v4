@@ -9,6 +9,8 @@ Textbox::Textbox(const sf::Vector2f size, int class_id)
 {
 	m_alignment = TextAlign::CENTER;
 	setSize(size);
+
+	m_textSize.setString("X");
 }
 
 Textbox::Textbox(const sf::Vector2f& size):
@@ -16,6 +18,8 @@ Textbox::Textbox(const sf::Vector2f& size):
 {
 	m_alignment = TextAlign::CENTER;
 	setSize(size);
+
+	m_textSize.setString("X");
 }
 
 Textbox::~Textbox()
@@ -39,10 +43,12 @@ void Textbox::setString(const std::string& string)
 void Textbox::setFont(const sf::Font& font)
 {
 	m_text.setFont(font);
+	m_textSize.setFont(font);
 }
 void Textbox::setCharacterSize(uint64_t size)
 {
 	m_text.setCharacterSize(size);
+	m_textSize.setCharacterSize(size);
 }
 void Textbox::setLineSpacing(float spacingFactor)
 {
@@ -55,6 +61,7 @@ void Textbox::setLetterSpacing(float spacingFactor)
 void Textbox::setStyle(sf::Uint32 style)
 {
 	m_text.setStyle(style);
+	m_textSize.setStyle(style);
 }
 void Textbox::setFillColor(const sf::Color& color)
 {
@@ -198,7 +205,7 @@ void Textbox::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		// since translation is last operation, text is translated w.r.t box
 		states.transform.translate(
 			(m_box.getSize().x - m_text.getGlobalBounds().width) * 0.5f * (int)m_alignment,
-			m_box.getSize().y * 0.5f - m_text.getGlobalBounds().height
+			m_box.getSize().y * 0.5f - m_textSize.getGlobalBounds().height
 		);
 
 		target.draw(m_text, states);

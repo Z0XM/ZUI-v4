@@ -43,7 +43,7 @@ Renderer::Renderer()
 
 	text = zui::create<zui::Textbox>();
 	text->setSize({ 80, 40 });
-	text->setPosition(400, 5);
+	text->setPosition(50, 100);
 	text->setFillColor(sf::Color::Transparent);
 	text->setOutlineColor(sf::Color(160, 32, 240));
 	text->setOutlineThickness(3);
@@ -104,8 +104,8 @@ Renderer::Renderer()
 	page->setMaxSize({ 1000, 1000 });
 	page->setPosition(1050, 100);
 	page->setActiveRegion({ 0,0, 400, 500 });
-	page->setScroll(zui::Page::RIGHT);
-	page->setScroll(zui::Page::BOTTOM);
+	//page->setScroll(zui::Page::RIGHT);
+	page->setScroll(zui::Page::BOTTOM, 10);
 
 	page->setHeader(true, true, true);
 
@@ -189,7 +189,7 @@ Renderer::Renderer()
 
 	frame.addEntity(*page);
 	frame.removeEntity(*page2);
-	page->addEntity(*page2);
+	//page->addEntity(*page2);
 
 	frame.addEntity(*rectB);
 	

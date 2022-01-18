@@ -24,7 +24,7 @@ Page::Scroll::Scroll()
 	m_bar.actionEvent = ActionEvent::MOUSEHELD;
 }
 
-void Page::Scroll::createScroll(sf::Vector2f region_size, sf::Vector2f max_size, ScrollPlacement place)
+void Page::Scroll::createScroll(sf::Vector2f region_size, sf::Vector2f max_size, ScrollPlacement place, float offset_from_page)
 {
 	sf::Vector2f barSize;
 
@@ -41,6 +41,8 @@ void Page::Scroll::createScroll(sf::Vector2f region_size, sf::Vector2f max_size,
 		barSize = sf::Vector2f(15, m_region_length * m_region_length / m_length);
 
 		if (place == RIGHT) m_rect.setPosition(region_size.x - 15, 0);
+
+		m_page_offset.x = offset_from_page; m_page_offset.y = 0.f;
 		
 	}
 	else if (place == TOP || place == BOTTOM) {
@@ -56,7 +58,11 @@ void Page::Scroll::createScroll(sf::Vector2f region_size, sf::Vector2f max_size,
 		barSize = sf::Vector2f(m_region_length * m_region_length / m_length, 15);
 
 		if (place == BOTTOM) m_rect.setPosition(0, region_size.y - 15);
+
+		m_page_offset.x = 0.f; m_page_offset.y = offset_from_page;
 	}
+
+	m_rect.move(m_page_offset);
 
 	m_bar.setPoint(0, sf::Vector2f(0, 0));
 	m_bar.setPoint(1, sf::Vector2f(barSize.x, 0));
@@ -71,7 +77,7 @@ sf::Vector2f Page::Scroll::getSize() const
 	return{ m_rect.getLocalBounds().width, m_rect.getLocalBounds().height };
 }
 
-sf::Vector2f Page::Scroll::mapPosition(const sf::Vector2f& position)
+sf::Vector2f Page::Scroll::mapBarPositionToRegionPosition(const sf::Vector2f& position)
 {
 	if (m_place == LEFT || m_place == RIGHT)
 		return sf::Vector2f(0.f, position.y * m_length / m_region_length);
@@ -79,9 +85,15 @@ sf::Vector2f Page::Scroll::mapPosition(const sf::Vector2f& position)
 		return sf::Vector2f(position.x * m_length / m_region_length, 0.f);
 }
 
-void Page::Scroll::mapBarPosition(const sf::Vector2f& position)
+void Page::Scroll::mapRegionPositionToBarPosition(const sf::Vector2f& position)
 {
-	m_bar.setPosition(m_rect.getPosition() + mapPosition(position));
+	sf::Vector2f barPos(0, 0);
+	if (m_place == LEFT || m_place == RIGHT)
+		barPos.y = position.y * m_region_length /  m_length;
+	if (m_place == TOP || m_place == BOTTOM)
+		barPos.x = position.x * m_region_length / m_length;
+
+	m_bar.setPosition(m_rect.getPosition() + barPos);
 }
 
 sf::Vector2f Page::Scroll::scrollTo(const sf::Vector2f& position)

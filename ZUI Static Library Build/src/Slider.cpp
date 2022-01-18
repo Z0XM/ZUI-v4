@@ -19,8 +19,10 @@ Slider::~Slider()
 {
 }
 
-void Slider::setVariable(float& var, float lower_limit, float upper_limit)
+void Slider::setVariable(float& var, float lower_limit, float upper_limit, bool keepAsInteger)
 {
+	m_keepAsInteger = keepAsInteger;
+
 	m_variable = &var;
 	m_limits[0] = lower_limit;
 	m_limits[1] = upper_limit;
@@ -55,6 +57,8 @@ void Slider::shiftOffset(float shift)
 
 	// map offset to variable
 	*m_variable = m_limits[0] + (m_offset / (m_box.getSize().x - m_bar.getLocalBounds().width)) * (m_limits[1] - m_limits[0]);
+
+	if (m_keepAsInteger) *m_variable = (int)(*m_variable);
 }
 
 void Slider::setBarFillColor(sf::Color color)

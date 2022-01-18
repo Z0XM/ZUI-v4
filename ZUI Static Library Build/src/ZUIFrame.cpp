@@ -7,6 +7,7 @@
 #include <ZUI/TextButton.hpp>
 #include <ZUI/Dropdown.hpp>
 #include <ZUI/Inputbox.hpp>
+//#include <ZUI/ToggleButton.hpp>
 
 using namespace zui;
 
@@ -80,11 +81,20 @@ uint64_t Entity::getClassID(const Entity& entity)
 	// get the 8 most significan bits
 	return entity.getID() >> 24;
 }
-Functional* zui::Entity::getFunctionalParent() const
+Functional* Entity::getFunctionalParent() const
 {
 	return m_functionalParent;
 }
-bool zui::Entity::isSelected() const
+Frame* Entity::getFrame() const
+{
+	Functional* frm = nullptr;
+	do {
+		frm = getFunctionalParent();
+	} while (frm != nullptr && frm->getFunctionalFrameType() != Functional::FunctionalObject::FRAME);
+
+	return (Frame*)frm;
+}
+bool Entity::isSelected() const
 {
 	return m_selected;
 }
@@ -114,7 +124,7 @@ void Entity::setAction(std::function<void()> func)
 	action = func;
 }
 
-bool zui::Entity::hasFunctionalParent() const
+bool Entity::hasFunctionalParent() const
 {
 	return m_functionalParent != nullptr;
 }
@@ -124,13 +134,14 @@ void Entity::setFunctionalParentForSubVariables(Functional* parent)
 
 }
 
-void zui::setFunctionalParent(Entity& entity, Functional* parent)
-{
-	entity.m_functionalParent = parent;
+namespace zui {
+	void setFunctionalParent(Entity& entity, Functional* parent)
+	{
+		entity.m_functionalParent = parent;
 
-	entity.setFunctionalParentForSubVariables(parent);
+		entity.setFunctionalParentForSubVariables(parent);
+	}
 }
-
 
 bool operator==(const Entity& first, const Entity& second)
 {
@@ -224,6 +235,16 @@ void Frame::removeEntity(Entity* entity)
 
 void Frame::removeEntity(uint64_t id)
 {
+	for (auto it = m_navigationOrder.begin(); it != m_navigationOrder.end(); it++) {
+		if ((*it)->getID() == id) {
+			m_navigationOrder.erase(it);
+			break;
+		}
+	}
+
+	if (m_functionalParents.find(id) != m_functionalParents.end())
+		m_functionalParents.erase(id);
+
 	// erase entity from map
 	m_entityMap.erase(id);
 }
@@ -231,6 +252,12 @@ void Frame::removeEntity(uint64_t id)
 void Frame::push_in_navigationOrder(Entity& entity) 
 {
 	m_navigationOrder.push_back(&entity);
+}
+
+void Frame::clear_navigationOrder()
+{
+	m_navigationOrder.clear();
+	m_navigator = -1;
 }
 
 Entity* Frame::getByID(uint64_t id) const
@@ -267,11 +294,11 @@ void Frame::update()
 			// if mouse is moved while being held on something
 			if (wasSomethingClicked() && m_clicked->actionEvent == Entity::ActionEvent::MOUSEHELD && m_clicked->hasAction()) {
 				// if functional parent is frame or nullptr then object does not depend bounds (control by other entities) 
-				if(!m_clicked->hasFunctionalParent() || m_clicked->getFunctionalParent()->getFunctionalFrame() == FunctionalObject::FRAME)
+				if(!m_clicked->hasFunctionalParent() || m_clicked->getFunctionalParent()->getFunctionalFrameType() == FunctionalObject::FRAME)
 					m_clicked->callAction();
 				
 				// if functional parent is page then its bounds are decided by the local bounds visible on the functional parent of its functional parent
-				else if(m_clicked->getFunctionalParent()->getFunctionalFrame() == FunctionalObject::PAGE &&
+				else if(m_clicked->getFunctionalParent()->getFunctionalFrameType() == FunctionalObject::PAGE &&
 						m_clicked->getFunctionalParent()->getLocalBounds().contains(
 							((Page*)(m_clicked->getFunctionalParent()))->getInverseTransform().transformPoint(
 								((Page*)(m_clicked->getFunctionalParent()))->getFunctionalParent()->getMousePosition()
@@ -281,7 +308,7 @@ void Frame::update()
 					m_clicked->callAction();
 
 				// if functional parent is dropdown then its bounds are decided by the local bounds visible on the functional parent of its functional parent
-				else if (m_clicked->getFunctionalParent()->getFunctionalFrame() == FunctionalObject::DROPDOWN &&
+				else if (m_clicked->getFunctionalParent()->getFunctionalFrameType() == FunctionalObject::DROPDOWN &&
 						m_clicked->getFunctionalParent()->getLocalBounds().contains(
 							((Dropdown*)(m_clicked->getFunctionalParent()))->getInverseTransform().transformPoint(
 								((Dropdown*)(m_clicked->getFunctionalParent()))->getFunctionalParent()->getMousePosition()
@@ -497,7 +524,7 @@ bool Frame::pollEvents(sf::Event e)
 		bool wasEventPolled = false;
 		// poll events in pages and dropdowns
 		for (auto it = m_functionalParents.begin(); it != m_functionalParents.end() && !wasEventPolled; it++) {
-			if (it->second->getFunctionalFrame() != 0 && it->second->contains(getMousePosition()))
+			if (it->second->getFunctionalFrameType() != 0 && it->second->contains(getMousePosition()))
 				wasEventPolled = it->second->pollEvents(e);
 		}
 
@@ -514,33 +541,40 @@ void Frame::draw()
 	}
 }
 
-bool zui::Frame::isMouseOverSomething() const
+bool Frame::isMouseOverSomething() const
 {
 	return m_mouseHoveringOn != nullptr;
 }
 
-bool zui::Frame::wasSomethingClicked() const
+bool Frame::wasSomethingClicked() const
 {
 	return m_clicked != nullptr;
 }
 
-Entity* zui::Frame::getClickedEntity() const
+Entity* Frame::getClickedEntity() const
 {
 	return m_clicked;
 }
 
-Entity* zui::Frame::getMouseHoveringOnWhichEntity() const
+Entity* Frame::getMouseHoveringOnWhichEntity() const
 {
 	return m_mouseHoveringOn;
 }
 
-Entity* zui::Frame::getNavigatedEntity() const
+Entity* Frame::getNavigatedEntity() const
 {
 	if (m_navigator == -1) return nullptr;
 	return m_navigationOrder[m_navigator];
 }
 
-Functional::FunctionalObject Functional::getFunctionalFrame()
+void Frame::resetEntityPointers()
+{
+	m_clicked = nullptr;
+	m_mouseHoveringOn = nullptr;
+	m_navigator = -1;
+}
+
+Functional::FunctionalObject Functional::getFunctionalFrameType()
 {
 	return m_functional_object;
 }

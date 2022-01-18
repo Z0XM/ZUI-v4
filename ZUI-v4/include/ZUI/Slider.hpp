@@ -26,9 +26,10 @@ public:
 	/// \param var -> refrence to variable
 	/// \param lower_limit -> lower limit of variable
 	/// \param upper_limit -> upper_limit of variable
+	/// \param keepAsInteger -> flag to only use integer values of var
 	///
 	////////////////////////////////////////////////////////////
-	void setVariable(float& var, float lower_limit, float upper_limit);
+	void setVariable(float& var, float lower_limit, float upper_limit, bool keepAsInteger = false);
 
 	////////////////////////////////////////////////////////////
 	/// \brief Get the value of pointed variable
@@ -132,6 +133,7 @@ private:
 	float m_offset;								/// < distance of slider bar from left position
 	float* m_variable;							/// < pointer to variable whose value needs to be altered
 	float m_limits[2];							/// < lower and upper limit of the variable
+	bool m_keepAsInteger;						/// < does variable acts as an integer or not
 
 	std::function<void()> m_attached_action;	/// < Function Attached to Slider Movement
 };

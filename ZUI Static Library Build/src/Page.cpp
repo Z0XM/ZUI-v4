@@ -19,6 +19,7 @@ Page::Page(const sf::Vector2f& size)
 
 	m_functional_object = FunctionalObject::PAGE;
 	
+	m_onMouseMove = nullptr;
 }
 
 Page::~Page()
@@ -142,11 +143,11 @@ sf::Vector2f Page::getSize() const
 {
 	return sf::Vector2f(m_activeRegion.width, m_activeRegion.height);
 }
-void Page::setScroll(ScrollPlacement place)
+void Page::setScroll(ScrollPlacement place, float offsetFromPage)
 {
 	// construct scroll
-	m_connectedScroll[place].createScroll(getSize(), getMaxSize(), place);
-	m_connectedScroll[place].mapBarPosition(sf::Vector2f(m_activeRegion.left, m_activeRegion.top));
+	m_connectedScroll[place].createScroll(getSize(), getMaxSize(), place, offsetFromPage);
+	m_connectedScroll[place].mapRegionPositionToBarPosition(getActiveRegionPosition());
 	m_connectedScroll[place].setActive();
 
 	// calculate complementary placement
@@ -165,7 +166,7 @@ void Page::setScroll(ScrollPlacement place)
 	m_connectedScroll[place].m_rect.setAction([this, place, comp]() {
 		sf::Vector2f offset = m_connectedScroll[place].scrollTo(getLocalMousePosition());
 		if (m_connectedScroll[comp].isActive())m_connectedScroll[comp].scrollBy(offset);
-		moveActiveRegion(m_connectedScroll[place].mapPosition(offset));
+		moveActiveRegion(m_connectedScroll[place].mapBarPositionToRegionPosition(offset));
 		});
 }
 void Page::removeScroll(ScrollPlacement place)
@@ -186,7 +187,7 @@ void Page::scrollBy(ScrollPlacement place, const sf::Vector2f& offset)
 	}
 
 	if (m_connectedScroll[place].isActive())
-		moveActiveRegion(m_connectedScroll[place].mapPosition(newOffset));
+		moveActiveRegion(m_connectedScroll[place].mapBarPositionToRegionPosition(newOffset));
 }
 void Page::setHeader(bool hasHeader, bool isMovable, bool isMinimisable, bool isMaximisable)
 {
@@ -269,6 +270,10 @@ void Page::setHeader(bool hasHeader, bool isMovable, bool isMinimisable, bool is
 		m_maximise.setInactive();
 	}
 }
+void Page::setMouseMoveAction(std::function<void()> onMouseMove)
+{
+	m_onMouseMove = onMouseMove;
+}
 sf::Vector2f Page::getLocalMousePosition() const
 {
 	return getInverseTransform().transformPoint(getFunctionalParent()->getMousePosition());
@@ -316,13 +321,16 @@ Entity* Page::isHit(const sf::Vector2f& point)
 
 
 	if (isActive()) {
-		//if point doesnt lie in page
-		if (!contains(point))return nullptr;
-
 		// if point is in one of he scrolls
 		for (int i = 0; i < 4 && entity == nullptr; i++) {
-			if (m_connectedScroll[i].isActive())entity = m_connectedScroll[i].isHit(inv_trans_point);
+			if (m_connectedScroll[i].isActive())
+				entity = m_connectedScroll[i].isHit(inv_trans_point);
 		}
+
+		if (entity != nullptr)return entity;
+
+		//if point doesnt lie in page
+		if (!contains(point))return nullptr;
 
 		// if point is in any entity
 		for (auto it = m_entities.begin(); it != m_entities.end() && entity == nullptr; it++) {
@@ -409,6 +417,9 @@ bool Page::pollEvents(sf::Event event)
 			}
 			return true;
 		}
+		if (event.type == sf::Event::MouseMoved && !wasEventPolled) {
+			if(m_onMouseMove != nullptr) m_onMouseMove();
+		}
 	}
 	return wasEventPolled;
 }
@@ -416,16 +427,20 @@ void Page::limitActiveRegion()
 {
 	// left and top must not be negative or exceed the maxSize
 	m_activeRegion.left = std::max(0.f, m_activeRegion.left);
-	m_activeRegion.left = std::min(m_maxSize.x, m_activeRegion.left);
-
 	m_activeRegion.top = std::max(0.f, m_activeRegion.top);
+
+	m_activeRegion.left = std::min(m_maxSize.x, m_activeRegion.left);
 	m_activeRegion.top = std::min(m_maxSize.y, m_activeRegion.top);
 
 	//if activeRegion is spreading out of the bounds
+	m_activeRegion.width = std::min(m_activeRegion.width, m_maxSize.x);
+	m_activeRegion.height = std::min(m_activeRegion.height, m_maxSize.y);
+
 	m_activeRegion.width = std::max(0.f, m_activeRegion.width);
-	if (m_activeRegion.left + m_activeRegion.width > m_maxSize.x)m_activeRegion.width = m_maxSize.x - m_activeRegion.left;
 	m_activeRegion.height = std::max(0.f, m_activeRegion.height);
-	if (m_activeRegion.top + m_activeRegion.height > m_maxSize.y)m_activeRegion.height = m_maxSize.y - m_activeRegion.top;
+	
+	if (m_activeRegion.left + m_activeRegion.width > m_maxSize.x)m_activeRegion.left = m_maxSize.x - m_activeRegion.width;
+	if (m_activeRegion.top + m_activeRegion.height > m_maxSize.y)m_activeRegion.top = m_maxSize.y - m_activeRegion.height;
 }
 
 void Page::setFunctionalParentForSubVariables(Functional* parent)

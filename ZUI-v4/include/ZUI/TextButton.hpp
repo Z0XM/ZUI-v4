@@ -12,7 +12,7 @@ protected:
 	/// \param class_id -> ZUI Class Id of the child class
 	///
 	////////////////////////////////////////////////////////////
-	TextButton(const sf::Vector2f size, int class_id);
+	TextButton(const sf::Vector2f& size, int class_id);
 
 public:
 

@@ -4,7 +4,7 @@
 
 using namespace zui;
 
-TextButton::TextButton(const sf::Vector2f size, int class_id)
+TextButton::TextButton(const sf::Vector2f& size, int class_id)
 	:Textbox(size, class_id)
 {
 	actionEvent = ActionEvent::RELEASE;

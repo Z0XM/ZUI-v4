@@ -221,7 +221,7 @@ public:
 	/// \brief Set Scroll by its position / direction i.e. Left, Right, Top, Bottom
 	///
 	////////////////////////////////////////////////////////////
-	void setScroll(ScrollPlacement place);
+	void setScroll(ScrollPlacement place, float offsetFromPage = 0.f);
 
 	////////////////////////////////////////////////////////////
 	/// \brief Remove Scroll by its position / direction i.e. Left, Right, Top, Bottom
@@ -277,6 +277,14 @@ public:
 	///
 	////////////////////////////////////////////////////////////
 	sf::Vector2f getLastMouseOffset() const;
+
+	////////////////////////////////////////////////////////////
+	/// \brief Set the action when mouse moves over page 
+	/// 
+	/// \param onMouseMove -> action on Mouse Move
+	///
+	////////////////////////////////////////////////////////////
+	void setMouseMoveAction(std::function<void()> onMouseMove);
 
 	////////////////////////////////////////////////////////////
 	/// \brief Check if the point is inside the object
@@ -357,9 +365,10 @@ private:
 		/// \param region_size -> size of the region in control of scroll
 		/// \param max_size -> maximum size of scrollable field
 		/// \param place -> placement of scroll
+		/// \param offset_from_page -> offset of scroll bar from page end (0 => inside page)
 		///
 		////////////////////////////////////////////////////////////
-		void createScroll(sf::Vector2f region_size, sf::Vector2f max_size, ScrollPlacement place);
+		void createScroll(sf::Vector2f region_size, sf::Vector2f max_size, ScrollPlacement place, float offset_from_page = 0.f);
 
 		////////////////////////////////////////////////////////////
 		/// \brief Get the size of the scroll body
@@ -370,12 +379,14 @@ private:
 		sf::Vector2f getSize() const;
 
 		////////////////////////////////////////////////////////////
-		/// \brief map the position of to new position in scroll
+		/// \brief Map the position of Scroll Bar to Position on Active Region
 		/// 
-		/// \position unmapped Position of scroll
+		/// \param position -> position Position Of Scroll
+		/// 
+		/// \return mapped position on active region
 		///
 		////////////////////////////////////////////////////////////
-		sf::Vector2f mapPosition(const sf::Vector2f& position);
+		sf::Vector2f mapBarPositionToRegionPosition(const sf::Vector2f& position);
 
 		////////////////////////////////////////////////////////////
 		/// \brief map the position of bar to scroll to new position
@@ -383,7 +394,7 @@ private:
 		/// \position unmapped Position of scroll
 		///
 		////////////////////////////////////////////////////////////
-		void mapBarPosition(const sf::Vector2f& position);
+		void mapRegionPositionToBarPosition(const sf::Vector2f& position);
 		
 		////////////////////////////////////////////////////////////
 		/// \brief Scroll the bar to the new position if possible
@@ -451,6 +462,7 @@ private:
 		float m_length;						/// < maximum length of scroll
 		float m_region_length;				/// < length of visible region
 		ScrollPlacement m_place;			/// < placement of scroll
+		sf::Vector2f m_page_offset;			/// < offset of scroll from page
 	};
 
 	////////////////////////////////////////////////////////////
@@ -470,6 +482,8 @@ private:
 	Button m_maximise;						/// < maximise button for the page
 	sf::FloatRect m_lastActiveRegion;		/// < stores the last active region for m_maximise
 	sf::RectangleShape m_background;		/// < background of the page
+
+	std::function<void()> m_onMouseMove;		/// < action to call on mouse move
 };
 
 

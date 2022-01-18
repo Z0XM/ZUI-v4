@@ -14,11 +14,12 @@ namespace zui {
 /// ZUI Class Ids 
 /// Used for generating entity Id, makes up for the 8 most significant bits of Id 
 ////////////////////////////////////////////////////////////
-constexpr int ZUI_ID_TEXTBOX =		8;
-constexpr int ZUI_ID_INPUTBOX =		7;
-constexpr int ZUI_ID_SLIDER =		6;
-constexpr int ZUI_ID_BUTTON =		5;
-constexpr int ZUI_ID_TEXTBUTTON =	4;
+constexpr int ZUI_ID_TEXTBOX =		9;
+constexpr int ZUI_ID_INPUTBOX =		8;
+constexpr int ZUI_ID_SLIDER =		7;
+constexpr int ZUI_ID_BUTTON =		6;
+constexpr int ZUI_ID_TEXTBUTTON =	5;
+constexpr int ZUI_ID_TOGGLEBUTTON =	4;
 constexpr int ZUI_ID_SCROLL =		3;
 constexpr int ZUI_ID_DROPDOWN =		2;
 constexpr int ZUI_ID_PAGE =			1;
@@ -86,7 +87,7 @@ public:
 	/// \return type of functional object
 	/// 
 	////////////////////////////////////////////////////////////
-	FunctionalObject getFunctionalFrame();
+	FunctionalObject getFunctionalFrameType();
 
 	////////////////////////////////////////////////////////////
 	// Member Data
@@ -151,12 +152,20 @@ public:
 	static uint64_t getClassID(const Entity& entity);
 
 	////////////////////////////////////////////////////////////
+	/// \brief Get the Functional Parent attached to object
+	/// 
+	/// \return Pointer to current Functional Parent
+	/// 
+	////////////////////////////////////////////////////////////
+	Functional* getFunctionalParent() const;
+
+	////////////////////////////////////////////////////////////
 	/// \brief Get the Frame attached to object
 	/// 
 	/// \return Pointer to current Frame
 	/// 
 	////////////////////////////////////////////////////////////
-	Functional* getFunctionalParent() const;
+	Frame* getFrame() const;
 
 	////////////////////////////////////////////////////////////
 	/// \brief Check if the point is inside the object
@@ -297,11 +306,11 @@ protected:
 	std::function<void()> action;							/// < Job of the entity upon reaching specified event state 
 
 private:
-	uint64_t m_id;										/// < Unique id for every entity
-	bool m_active;										/// < State of the entity
-	Functional* m_functionalParent;						/// < Frame attached to entity, can be nullptr
+	uint64_t m_id;											/// < Unique id for every entity
+	bool m_active;											/// < State of the entity
+	Functional* m_functionalParent;							/// < Frame attached to entity, can be nullptr
 
-	static uint64_t item_count;							/// < Strictly increasing count of all constructed entities, Used for generating Ids, \
+	static uint64_t item_count;								/// < Strictly increasing count of all constructed entities, Used for generating Ids, \
 																  makes up for the 24 least significant bits of Id
 };
 
@@ -322,6 +331,12 @@ template<typename T>
 std::unique_ptr<T> copy(std::unique_ptr<T>& copy)
 {
 	return std::make_unique<T>(*copy);
+}
+
+template<typename T>
+void destroy(std::unique_ptr<T>& entity)
+{
+	entity.reset();
 }
 
 
@@ -390,6 +405,12 @@ public:
 	/// \param entity entity to be added in navigation order
 	//////////////////////////////////////////////////////////
 	void push_in_navigationOrder(Entity& entity);
+
+	///////////////////////////////////////////////////////////
+	/// \brief clear the Navigation Order
+	///	
+	//////////////////////////////////////////////////////////
+	void clear_navigationOrder();
 
 	////////////////////////////////////////////////////////////
 	/// \brief Get the entity attached to the object by Id
@@ -498,6 +519,8 @@ public:
 	/// 
 	////////////////////////////////////////////////////////////
 	Entity* getNavigatedEntity() const;
+
+	void resetEntityPointers();
 
 	////////////////////////////////////////////////////////////
 	// Member Data
